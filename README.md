@@ -28,13 +28,13 @@ git clone https://github.com/ThibaultLatrille/SimuEvol && cd SimuEvol && git che
 Install python3 packages
 ```
 sudo apt install -qq -y python3-dev python3-pip screen
-pip3 install snakemake numpy matplotlib statsmodels pandas ete3 --user
+pip3 install snakemake numpy matplotlib pandas ete3 --user
 ```
 
 ## 2. Run the simulation and reproduce the figures
 To reproduce a figures of the manuscript, one can use the config files of the simulations (.yaml).
 ```
-python3 ./scripts/simulated_experiment.py --folder Heatmap --config figure-3D.yaml --nbr_cpu 4
+python3 ./scripts/simulated_experiment.py --config config.yaml --name Simulations -j 4
 ```
 The script _simulated_experiment.py_ also contains options to run the simulations on a cluster (slurm).
 

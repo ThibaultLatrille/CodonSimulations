@@ -8,6 +8,7 @@
 
 .idea/
 /SimuEvol
+/Experiments/*/
 .ipynb_checkpoints/
 *.pyc
 *.aux
