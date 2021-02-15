@@ -27,3 +27,7 @@
 *.bbl
 *.blg
 *.contdiff
+*.tgz
+*.bpp
+*.pdf
+*.png
