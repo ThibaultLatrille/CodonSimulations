@@ -1,2 +1,4 @@
 #!/usr/bin/env bash
-python3 ./scripts/simulated_experiment.py --config config.yaml --name Simulations -j 4
+for CONFIG in ./Experiments/*.yaml; do
+  python3 ./scripts/simulated_experiment.py --config $(basename "${CONFIG}") -j 4
+done

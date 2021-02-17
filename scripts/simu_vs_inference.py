@@ -9,8 +9,8 @@ import statsmodels.api as sm
 from plot_module import *
 
 if __name__ == '__main__':
-    plt.figure(figsize=(1920 / my_dpi, 1080 / my_dpi), dpi=my_dpi)
-    simu_path = "Experiments/SimulationsSubset"
+
+    simu_path = "Experiments/Simulations"
     dico_r2 = {"Experiment": []}
 
     for filepath in sorted(glob("{0}/*.nhx".format(simu_path))):
@@ -28,13 +28,14 @@ if __name__ == '__main__':
             dS_tree = Tree(exp + ".counts_dS.dnd", format=1)
             simu_tree = Tree(filepath, format=1)
 
-            node_dico = {"estimation": []}
+            node_dico = {"estimation": [], "dS": []}
             for n_sim, n_dN, n_dS in zip(simu_tree.iter_descendants(), dN_tree.iter_descendants(),
                                          dS_tree.iter_descendants()):
                 assert (set(n_dN.get_leaf_names()) == set(n_dS.get_leaf_names()))
                 assert (set(n_sim.get_leaf_names()) == set(n_dN.get_leaf_names()))
                 if n_sim.is_root(): continue
                 node_dico["estimation"].append(n_dN.dist / n_dS.dist)
+                node_dico["dS"].append(n_dS.dist)
                 for attr in n_sim.features:
                     if not (("dNdS_count" in attr) or ("Branch_population_size" in attr)): continue
                     if attr not in node_dico: node_dico[attr] = []
@@ -42,9 +43,10 @@ if __name__ == '__main__':
 
             y = node_dico["estimation"]
             for param, x in node_dico.items():
-                if param == "estimation": continue
+                if param == "estimation" or param == "dS": continue
 
-                plt.scatter(x, y, linewidth=2, color="#5D80B4")
+                plt.figure(figsize=(1920 / my_dpi, 1080 / my_dpi), dpi=my_dpi)
+                plt.scatter(x, y, linewidth=2, c=node_dico["dS"], cmap='inferno')
 
                 if "population_size" in param:
                     results = sm.OLS(y, sm.add_constant(np.log(x))).fit()
@@ -65,11 +67,12 @@ if __name__ == '__main__':
                            fontsize=legend_size)
                 plt.ylabel("Inferred dN/dS (Bio++ {0})".format(model), fontsize=legend_size)
                 plt.legend(fontsize=legend_size)
-
+                cbar = plt.colorbar()
+                cbar.set_label('branch length (dS)', fontsize=legend_size)
                 plt.tight_layout()
                 plt.savefig("{0}/{1}.{2}.pdf".format(plot_dir, basename(exp), param), format="pdf", dpi=my_dpi)
                 plt.savefig("{0}/{1}.{2}.png".format(plot_dir, basename(exp), param), format="png", dpi=my_dpi)
                 plt.clf()
-        plt.close('all')
+                plt.close('all')
 
-    pd.DataFrame(dico_r2).to_csv("DataBiopp/results.tsv", sep="\t", index=False)
+    pd.DataFrame(dico_r2).to_csv("DataBiopp/results.tsv", sep="\t", index=False, float_format="%.2f")

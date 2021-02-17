@@ -6,6 +6,7 @@ from subprocess import run
 
 def create_experiment(name, config, screen, sbatch, nbr_cpu):
     os.chdir("Experiments")
+    if name.strip() == "": name = config.replace(".yaml", "")
     exp_path = os.getcwd() + '/' + name
     os.makedirs(exp_path, exist_ok=True)
     os.system('cp {0} {1}/config.yaml'.format(config, exp_path))
@@ -38,7 +39,7 @@ def create_experiment(name, config, screen, sbatch, nbr_cpu):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('-n', '--name', required=True, type=str, default="MutationBias", dest="name")
+    parser.add_argument('-n', '--name', required=False, type=str, default="", dest="name")
     parser.add_argument('-c', '--config', required=True, type=str, default="config.yaml", dest="config")
     parser.add_argument('-s', '--screen', required=False, type=bool, default=False, dest="screen")
     parser.add_argument('-b', '--sbatch', required=False, type=bool, default=False, dest="sbatch")

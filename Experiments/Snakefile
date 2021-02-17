@@ -11,6 +11,7 @@ configfile: open_config(EXPERIMENT, 'config.yaml')
 # Parameters for the simulation
 MODELS = config['EXPERIMENT']['SIMULATORS']
 SIMU_PARAM = {k: '' for k in MODELS + ['SIMULATION']}
+SIMU_PARAM['SIMULATION'] += ' --output_branch_length_in_dS_unit'
 SIMU_PARAM['SIMULATION'] += ' --newick ' + copy_params(EXPERIMENT, ROOT, config['SIMULATION']['TREE'])
 SIMU_PARAM['SIMULATION'] += ' --precision_matrix ' + copy_params(EXPERIMENT, ROOT, config['SIMULATION']['PRECISION_MATRIX'])
 
